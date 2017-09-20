@@ -1,6 +1,14 @@
 <html>
-<head></head>
-<body ondrop="dropHandler(event);" ondragover="dragoverHandler(event);" ondragend="dragendHandler(event);">
+<head>
+<style>
+.full { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.content { font: 2.2em "Helvetica Neue", sans-serif; color: #aaa; }
+.drag { background-color: rgba(0, 153, 255, .2); }
+.drag .content { color: #08a; }
+</style>
+</head>
+<body>
+<div class="full"><span class="content">Drop .ics File Here to Open in Google Calendar</span></div>
 <script src="js/bundle.js"></script>
 </body>
 </html>
