@@ -11,8 +11,12 @@
     });
   }
 
-  function linkFromIcsText(text) {
-    const lines = text.replace(/\r?\n /g, '').split(/\r?\n/);
+  function eventStrsFromIcsText(icsText) {
+    return icsText.split('END:VEVENT');
+  }
+
+  function linkFromEventStr(eventStr) {
+    const lines = eventStr.replace(/\r?\n /g, '').split(/\r?\n/);
     const endIndex = lines.findIndex(line => line.match(/^END:VEVENT$/));
     const eventData = lines.slice(0, endIndex).reduce((memo, line) => {
       const [field, ...rest] = line.split(':');
@@ -51,6 +55,20 @@
     ].join('&');
   }
 
+  function openLinkInIcsFile(icsFile) {
+    readFile(icsFile)
+        .then(eventStrsFromIcsText)
+        .then(strs => strs[0])
+        .then(linkFromEventStr)
+        .then((link) => {
+          window.location = link;
+        })
+        .catch((err) => {
+          // TODO display error
+          console.error(err);
+        });
+  }
+
   function dropHandler(e) {
     body.classList.remove('drag');
     e.preventDefault();
@@ -65,22 +83,14 @@
       .slice(0, 1)
       .forEach((item) => {
         const file = item.getAsFile();
-        readFile(file)
-            .then(linkFromIcsText)
-            .then((link) => {
-              window.location = link;
-            });
+        openLinkInIcsFile(file);
       });
     } else {
       // Use DataTransfer interface to access the file(s)
       Array.from(dt.files)
       .slice(0, 1)
       .forEach((file) => {
-        readFile(file)
-            .then(linkFromIcsText)
-            .then((link) => {
-              window.location = link;
-            });
+        openLinkInIcsFile(file);
       });
     }
   }
