@@ -15,41 +15,32 @@ function readFile(file) {
 }
 
 function linkFromIcsText(text) {
-  const lines = text.split(/\r?\n/);
+  const lines = text.replace(/\r?\n /g, '').split(/\r?\n/);
   const endIndex = lines.findIndex(line => line.match(/^END:VEVENT$/));
   const eventData = lines.slice(0, endIndex).reduce((memo, line) => {
-    if (line.match(/^ /)) {
-      if (!memo.hasOwnProperty('desc')) {
-        throw new Error('Found multiline without "DESCRIPTION"');
-      }
-      memo.desc.push(line.slice(1));
-    } else {
-      const [field, ...rest] = line.split(':');
-      const value = rest.join(':');
+    const [field, ...rest] = line.split(':');
+    const value = rest.join(':');
 
-      switch (field) {
-        case 'DESCRIPTION':
-          memo.desc = [];
-          memo.desc.push(value);
-          break;
-        case 'SUMMARY':
-          memo.summary = value;
-          break;
-        case 'DTSTART':
-          memo.start = value;
-          break;
-        case 'DTEND':
-          memo.end = value;
-          break;
-        case 'LOCATION':
-          memo.location = value;
-          break;
-      }
+    switch (field) {
+      case 'DESCRIPTION':
+        memo.desc = value;
+        break;
+      case 'SUMMARY':
+        memo.summary = value;
+        break;
+      case 'DTSTART':
+        memo.start = value;
+        break;
+      case 'DTEND':
+        memo.end = value;
+        break;
+      case 'LOCATION':
+        memo.location = value;
+        break;
     }
     return memo;
   }, {});
   eventData.desc = eventData.desc
-      .join('')
       .replace(/\\n/g, '\n')
       .replace(/\\/g, '');
 
