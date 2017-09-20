@@ -102,7 +102,7 @@
       e.preventDefault();
     };
     body.ondragleave = (e) => {
-      body.classList.add('drag');
+      body.classList.remove('drag');
       e.preventDefault();
     };
   };
