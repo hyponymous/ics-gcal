@@ -16,34 +16,44 @@
   }
 
   function linkFromEventStr(eventStr) {
-    const lines = eventStr.replace(/\r?\n /g, '').split(/\r?\n/);
+    let lines = eventStr.replace(/\r?\n /g, '').split(/\r?\n/);
+    // throw away lines after end of first event
     const endIndex = lines.findIndex(line => line.match(/^END:VEVENT$/));
-    const eventData = lines.slice(0, endIndex).reduce((memo, line) => {
+    if (endIndex >= 0) {
+      lines = lines.slice(0, endIndex);
+    }
+
+    let eventData = lines.reduce((eventData, line) => {
       const [field, ...rest] = line.split(':');
       const value = rest.join(':');
 
       switch (field) {
         case 'DESCRIPTION':
-          memo.desc = value;
+          eventData.desc = value;
           break;
         case 'SUMMARY':
-          memo.summary = value;
+          eventData.summary = value;
           break;
         case 'DTSTART':
-          memo.start = value;
+          eventData.start = value;
           break;
         case 'DTEND':
-          memo.end = value;
+          eventData.end = value;
           break;
         case 'LOCATION':
-          memo.location = value;
+          eventData.location = value;
           break;
       }
-      return memo;
+      return eventData;
     }, {});
-    eventData.desc = eventData.desc
+
+    const clean = str => str
         .replace(/\\n/g, '\n')
         .replace(/\\/g, '');
+    eventData = ['summary', 'location', 'desc'].reduce((eventData, key) => {
+      eventData[key] = clean(eventData[key]);
+      return eventData;
+    }, eventData);
 
     const dateStr = `${eventData.start}/${eventData.end}`;
     return [
