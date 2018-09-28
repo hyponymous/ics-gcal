@@ -67,16 +67,16 @@
 
   function openLinkInIcsFile(icsFile) {
     readFile(icsFile)
-        .then(eventStrsFromIcsText)
-        .then(strs => strs[0])
-        .then(linkFromEventStr)
-        .then((link) => {
-          window.location = link;
-        })
-        .catch((err) => {
-          // TODO display error
-          console.error(err);
-        });
+      .then(eventStrsFromIcsText)
+      .then(strs => strs[0])
+      .then(linkFromEventStr)
+      .then((link) => {
+        window.location = link;
+      })
+      .catch((err) => {
+        // TODO display error
+        console.error(err);
+      });
   }
 
   function dropHandler(e) {
@@ -87,21 +87,21 @@
     if (dt.items) {
       // Use DataTransferItemList interface to access the file(s)
       Array.from(dt.items)
-      .filter((item) => {
-        return item.kind === 'file';
-      })
-      .slice(0, 1)
-      .forEach((item) => {
-        const file = item.getAsFile();
-        openLinkInIcsFile(file);
-      });
+        .filter((item) => {
+          return item.kind === 'file';
+        })
+        .slice(0, 1)
+        .forEach((item) => {
+          const file = item.getAsFile();
+          openLinkInIcsFile(file);
+        });
     } else {
       // Use DataTransfer interface to access the file(s)
       Array.from(dt.files)
-      .slice(0, 1)
-      .forEach((file) => {
-        openLinkInIcsFile(file);
-      });
+        .slice(0, 1)
+        .forEach((file) => {
+          openLinkInIcsFile(file);
+        });
     }
   }
 
