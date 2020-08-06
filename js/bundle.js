@@ -50,10 +50,11 @@
     const clean = str => str
         .replace(/\\n/g, '\n')
         .replace(/\\/g, '');
-    eventData = ['summary', 'location', 'desc'].reduce((eventData, key) => {
-      eventData[key] = clean(eventData[key]);
-      return eventData;
-    }, eventData);
+    ['summary', 'location', 'desc'].forEach(key => {
+      if (key in eventData) {
+        eventData[key] = clean(eventData[key]);
+      }
+    });
 
     const dateStr = `${eventData.start}/${eventData.end}`;
     return [
