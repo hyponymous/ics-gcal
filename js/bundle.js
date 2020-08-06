@@ -61,9 +61,11 @@
       'https://www.google.com/calendar/render?action=TEMPLATE',
       `dates=${encodeURIComponent(dateStr)}`,
       `text=${encodeURIComponent(eventData.summary)}`,
-      `location=${encodeURIComponent(eventData.location)}`,
+      eventData.location && `location=${encodeURIComponent(eventData.location)}`,
       `details=${encodeURIComponent(eventData.desc)}`
-    ].join('&');
+    ]
+        .filter(x => x)
+        .join('&');
   }
 
   function openLinkInIcsFile(icsFile) {
